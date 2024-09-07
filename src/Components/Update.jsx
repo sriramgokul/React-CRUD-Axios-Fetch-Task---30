@@ -1,13 +1,17 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom"
 import TopBar from "./TopBar";
-import { useState } from "react";
-import { newUsers } from "./APICalls";
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import { editUsers } from "./APICalls";
 
-function CreateUsers({newdetails,setNewDetails}){
+function Update({newdetails,setNewDetails}){
+
+  const {id} = useParams();
+  
+
   const [name,setName]= useState("")
   const [username,setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -17,14 +21,29 @@ function CreateUsers({newdetails,setNewDetails}){
   const [zip,setZip] = useState("");
   const [phoneno,setPhoneNo] = useState("");
   const [website,setWebsite] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [index,setIndex] = useState("");
 
+  useEffect(()=>{
+        const selectedUsers = newdetails.filter((val)=> (val.id == id));
+        const selectedUseIndex = newdetails.findIndex((val)=>val.id == id);
+            setIndex(selectedUseIndex);
+            setName(selectedUsers[0].name_user);
+            setUserName(selectedUsers[0].username_user);
+            setEmail(selectedUsers[0].email_user);
+            setAddress(selectedUsers[0].address_user);
+            setStreet(selectedUsers[0].street_user);
+            setCity(selectedUsers[0].city_user);
+            setZip(selectedUsers[0].zipcode_user);
+            setPhoneNo(selectedUsers[0].phone_user);
+            setWebsite(selectedUsers[0].website_user);
 
-  
+  },[id])
 
-    const AddnewUsers = ()=> {
+  // To update the User Info
 
-      const addNewUsersDetails = {
+  function handleUpdate(){
+    const editedUsers = {
         name_user : name ,
         username_user :username ,
         email_user :email ,
@@ -34,24 +53,22 @@ function CreateUsers({newdetails,setNewDetails}){
         zipcode_user : zip,
         phone_user :phoneno ,
         website_user :website ,
-      };
-      console.log(addNewUsersDetails);
-      newUsers(addNewUsersDetails).then((data)=>{
-        if(data){
-          setNewDetails([...newdetails, addNewUsersDetails]);
-          navigate("/");
-        }
-        else{
-          console.log("Sorry can not add new Users");
-        }
-      })
-
     }
-
-
-  
+    editUsers(id,editedUsers).then((data)=>{
+        if(data){
+            newdetails[index]= editedUsers;
+            setNewDetails([...newdetails]);   
+            navigate("/");
+        }else{
+            console.log("Sorry there was a error while updating the user details")
+        }
+    })
+    
+    
+  }
+    
     return (
-      <div>
+        <div>
         <TopBar/>
         <div className='container-fluid '>
                 <Form>
@@ -98,10 +115,11 @@ function CreateUsers({newdetails,setNewDetails}){
                         </Form.Group>
                     </Row>
                     
-                    <Button variant="primary" onClick={AddnewUsers}>Submit</Button>
+                    <Button variant="primary" onClick={handleUpdate}>Update</Button>
                 </Form>    
         </div>
         </div>
     )
 }
-export default CreateUsers;
+
+export default Update;

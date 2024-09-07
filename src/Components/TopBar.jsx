@@ -13,7 +13,7 @@ function TopBar() {
           <Nav className="me-auto">
             <Nav.Link onClick={()=>navigate("/home/users")}  className="fs-3">HOME</Nav.Link>
             <Nav.Link onClick={()=>navigate("/")}  className="fs-3">DASHBOARD</Nav.Link>
-            <Nav.Link onClick={()=>navigate("/add/users")}  className="fs-3">ADD USERS</Nav.Link>
+            <Nav.Link onClick={()=>navigate("/add/users")}  className="fs-3">ADDUSERS</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         </div>
